@@ -1,8 +1,11 @@
 package com.example.moodzy;
 
+import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -24,9 +27,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(MainActivity.this);
         setContentView(R.layout.activity_main);
-
+        View rootView = findViewById(android.R.id.content);
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(rootView, "alpha", 0f, 1f);
+        fadeIn.setDuration(2000);
+        fadeIn.start();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().setDecorFitsSystemWindows(false);
         }
@@ -42,22 +48,31 @@ public class MainActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
             }
-        }
-        else {
+        } else {
             getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_IMMERSIVE
                             | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        recyclerView = (RecyclerView) findViewById(R.id.mood_view);
-        String[] moodTitles = getResources().getStringArray(R.array.mood_titles);
-        TypedArray moodImages = getResources().obtainTypedArray(R.array.mood_images);
+        View roundedRectangle = findViewById(R.id.imageView);
+        ObjectAnimator slideDown = ObjectAnimator.ofFloat(roundedRectangle, "translationY", -2000f, 0f);
+        slideDown.setDuration(1500);
+        slideDown.start();
 
-        SpanningLinearLayoutManager layoutManager = new SpanningLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setLayoutManager(layoutManager);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, moodTitles, moodImages);
-        recyclerView.setAdapter(adapter);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                recyclerView = (RecyclerView) findViewById(R.id.mood_view);
+                String[] moodTitles = getResources().getStringArray(R.array.mood_titles);
+                TypedArray moodImages = getResources().obtainTypedArray(R.array.mood_images);
+
+                SpanningLinearLayoutManager layoutManager = new SpanningLinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setLayoutManager(layoutManager);
+                RecyclerViewAdapter adapter = new RecyclerViewAdapter(MainActivity.this, moodTitles, moodImages);
+                recyclerView.setAdapter(adapter);
+            }
+        }, 1500);
     }
-}
+    }
