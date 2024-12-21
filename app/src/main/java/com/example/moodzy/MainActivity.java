@@ -1,6 +1,7 @@
 package com.example.moodzy;
 
 import android.animation.ObjectAnimator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Build;
@@ -9,6 +10,10 @@ import android.os.Handler;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.widget.Button;
+import android.app.AlertDialog;
+
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -74,5 +79,23 @@ public class MainActivity extends AppCompatActivity {
                 recyclerView.setAdapter(adapter);
             }
         }, 1500);
+        Button submitButton = findViewById(R.id.submit_button);
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show a dialog box
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                //builder.setTitle("Mood Submission");
+                builder.setMessage("Your response has been recorded. Thank you!");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss(); // Close the dialog
+                    }
+                });
+                builder.show();
+            }
+        });
     }
     }
