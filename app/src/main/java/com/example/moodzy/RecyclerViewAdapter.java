@@ -60,8 +60,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.checkBox.setChecked(position == selectedPosition);
 
         holder.checkBox.setOnClickListener(v -> {
-            if (selectedPosition != position) {
-                selectedPosition = position;
+            if (holder.checkBox.isChecked()) {
+                if (selectedPosition != position) {
+                    selectedPosition = position;
+                    notifyDataSetChanged();
+                }
+            } else {
+                selectedPosition = -1;
                 notifyDataSetChanged();
             }
         });
