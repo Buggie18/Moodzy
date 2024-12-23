@@ -17,6 +17,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context context;
     private String[] moodTitles;
     private TypedArray moodImages;
+    public int selectedPosition = -1;
+
+    public void resetSelection() {
+        selectedPosition = -1;
+        notifyDataSetChanged(); // Notify the adapter to refresh the views
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -51,6 +57,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, int position) {
         holder.textView.setText(moodTitles[position]);
         holder.imageView.setImageResource(moodImages.getResourceId(position, 0));
+        holder.checkBox.setChecked(position == selectedPosition);
+
+        holder.checkBox.setOnClickListener(v -> {
+            if (holder.checkBox.isChecked()) {
+                if (selectedPosition != position) {
+                    selectedPosition = position;
+                    notifyDataSetChanged();
+                }
+            } else {
+                selectedPosition = -1;
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
